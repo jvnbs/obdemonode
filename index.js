@@ -1,42 +1,48 @@
-// index.js or some other route file
 const express = require('express');
-const pool = require('./db');
-
 const app = express();
-const port = 3000;
+const userRoutes = require('./routes/userRoutes');
+const postRoutes = require('./routes/postRoutes');
+const pool = require('./models/db');
+const path = require('path');
+const expressLayouts = require('express-ejs-layouts');
+
+require('dotenv').config();
+
+// Serve static files from the "public" folder
+app.use(express.static(path.join(__dirname, 'public')));
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+// app.set('views', 'views');
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(expressLayouts);
+app.set('layout', 'layouts/main');
 
 app.use(express.json());
 
-app.get('/', async (req, res) => {
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const offset = parseInt(req.query.offset, 10) || 0;
-  
-    try {
-      const [rows] = await pool.query('SELECT * FROM users LIMIT ? OFFSET ?', [limit, offset]);
-      if (rows.length === 0) {
-        return res.status(404).json({ message: 'No users found' });
-      }
-      res.json(rows);
-    } catch (err) {
-      console.error('Database error:', err.message);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
-  
-  
+// Mount Routes
+app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
 
-// Route to add a new user
-app.post('/users', (req, res) => {
-  const { name, email } = req.body;
-  pool.query('INSERT INTO users (name, email) VALUES (?, ?)', [name, email], (err, result) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+// Render user page with user data
+app.get('/', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM users');
+    console.log(rows);
+    if (rows.length === 0) {
+      return res.render('users', { users: [] });
     }
-    res.status(201).json({ id: result.insertId, name, email });
-  });
+    res.render('users', { users: rows });
+  } catch (error) {
+    console.error('Error fetching users:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+
+
+// Start Server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
