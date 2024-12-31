@@ -8,8 +8,11 @@ const port = 3000;
 app.use(express.json());
 
 app.get('/', async (req, res) => {
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const offset = parseInt(req.query.offset, 10) || 0;
+  
     try {
-      const [rows] = await pool.query('SELECT * FROM users');
+      const [rows] = await pool.query('SELECT * FROM users LIMIT ? OFFSET ?', [limit, offset]);
       if (rows.length === 0) {
         return res.status(404).json({ message: 'No users found' });
       }
@@ -19,6 +22,7 @@ app.get('/', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+  
   
 
 // Route to add a new user
