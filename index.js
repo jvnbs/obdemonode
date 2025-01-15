@@ -1,7 +1,9 @@
 const express = require('express');
 const app = express();
 const userRoutes = require('./routes/userRoutes');
+const staffRoutes = require('./routes/staffRoutes');
 const postRoutes = require('./routes/postRoutes');
+const productRoutes = require('./routes/productRoutes');
 const pool = require('./models/db');
 const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
@@ -18,15 +20,15 @@ app.set('layout', 'layouts/main');
 app.use(express.json());
 
 app.use('/api/users', userRoutes);
+app.use('/api/staffs', staffRoutes);
 app.use('/api/posts', postRoutes);
-
-
+app.use('/api/products', productRoutes);
 
 
 // Render user page with user data
 app.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM users');
+    const [rows] = await pool.query('SELECT * FROM users LIMIT 5');
     console.log(rows);
     if (rows.length === 0) {
       return res.render('users', { users: [] });
@@ -64,6 +66,21 @@ app.get('/staffs', async (req, res) => {
     res.render('staffs', { staffs: rows });
   } catch (error) {
     console.error('Error fetching users:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+app.get('/products', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM admins');
+    console.log(rows);
+    if (rows.length === 0) {
+      return res.render('products', { products: [] });
+    }
+    res.render('products', { products: rows });
+  } catch (error) {
+    console.error('Error fetching products:', error.message);
     res.status(500).send('Internal Server Error');
   }
 });

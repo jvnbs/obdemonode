@@ -1,67 +1,71 @@
 <div class="page-inner">
-    <div
-      class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
-    >
-      <div>
-        <h3 class="fw-bold mb-3">Dashboard</h3>
-      </div>
-      <div class="ms-md-auto py-2 py-md-0">
-        <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
-        <a href="#" class="btn btn-primary btn-round">Add Customer</a>
-      </div>
+  <div
+    class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
+  >
+    <div>
+      <h3 class="fw-bold mb-3">Dashboard</h3>
     </div>
-   
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card card-round">
-          <div class="card-header">
-            <div class="card-head-row card-tools-still-right">
-              <div class="card-title">Staff Information</div>
-              <div class="card-tools">
-              </div>
-            </div>
+    <div class="ms-md-auto py-2 py-md-0">
+      <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
+      <a href="#" class="btn btn-primary btn-round">Add Customer</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-round">
+        <div class="card-header">
+          <div class="card-head-row card-tools-still-right">
+            <div class="card-title">Staff Information</div>
+            <div class="card-tools"></div>
           </div>
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <!-- Projects table -->
-              <table class="table align-items-center mb-0">
-                <thead class="thead-light">
-                  <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Phone No.</th>
-                    <th scope="col">Added On</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <% staffs.forEach(staff => { %>
-                        <tr>
-                        <td><%= staff.name %></td>
-                        <td><%= staff.email %></td>
-                        <td><%= staff.phone_number %></td> 
-                        <td><%= new Date(staff.created_at).toISOString().split('T')[0] %></td>
-                        <td>
-                            <% if (staff.is_active == 1) { %>
-                                <span class="badge badge-success">Activated</span>
-                            <% } else { %>
-                                <span class="badge badge-danger">Deactivated</span>
-                            <% } %>
-                          </td>
-                        <td>
-                            <button class="btn btn-icon btn-round btn-success btn-sm me-2" >
-                                <i class="fa fa-check"></i>
-                            </button>
-                            <span class="badge badge-success">Completed</span>
-                        </td>
-                    </tr>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <!-- Projects table -->
+            <table class="table align-items-center mb-0">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Phone No.</th>
+                  <th scope="col">Added On</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% staffs.forEach(staff => { %>
+                <tr>
+                  <td><%= staff.name %></td>
+                  <td><%= staff.email %></td>
+                  <td><%= staff.phone_number %></td>
+                  <td>
+                    <%= new Date(staff.created_at).toISOString().split('T')[0]
+                    %>
+                  </td>
+                  <td>
+                    <% if (staff.is_active == 1) { %>
+                    <span class="badge badge-success">Activated</span>
+                    <% } else { %>
+                    <span class="badge badge-danger">Deactivated</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <button
+                      class="btn btn-icon btn-round btn-success btn-sm me-2"
+                    >
+                      <i class="fa fa-check"></i>
+                    </button>
+                    <span class="badge badge-success">Completed</span>
+                  </td>
+                </tr>
                 <% }) %>
-                </tbody>
-              </table>
-            </div>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
