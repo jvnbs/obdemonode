@@ -73,12 +73,20 @@ app.get('/staffs', async (req, res) => {
 
 app.get('/products', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM admins');
-    console.log(rows);
-    if (rows.length === 0) {
+    // Fetch data from the API endpoint
+    const response = await fetch('http://localhost:3000/api/products');
+    const data = await response.json(); // Parse the JSON response
+
+    // Log the fetched data
+    console.log('Products:', data);
+
+    // Check if data is empty
+    if (data.length === 0) {
       return res.render('products', { products: [] });
     }
-    res.render('products', { products: rows });
+
+    // Render the EJS view with the fetched data
+    res.render('products', { products: data });
   } catch (error) {
     console.error('Error fetching products:', error.message);
     res.status(500).send('Internal Server Error');
