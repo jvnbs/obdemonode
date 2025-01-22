@@ -36,25 +36,25 @@
                 </tr>
               </thead>
               <tbody>
-                <% if (!products || products.length === 0) { %>
+                <% if (!results || results.length === 0) { %>
                 <tr>
                   <td colspan="9">No data available</td>
                 </tr>
-                <% } else { %> <% products.forEach(product => { %>
+                <% } else { %> <% results.forEach(result => { %>
                 <tr>
-                  <td><%= product.name || 'N/A' %></td>
-                  <td><%= product.email || 'N/A' %></td>
-                  <td><%= product.phone_number || 'N/A' %></td>
-                  <td><%= product.gender || 'N/A' %></td>
+                  <td><%= result.name || 'N/A' %></td>
+                  <td><%= result.email || 'N/A' %></td>
+                  <td><%= result.phone_number || 'N/A' %></td>
+                  <td><%= result.gender || 'N/A' %></td>
                   <td>
-                    <% if (product.is_active == 1) { %>
+                    <% if (result.is_active == 1) { %>
                     <span class="badge badge-success">Activated</span>
                     <% } else { %>
                     <span class="badge badge-danger">Deactivated</span>
                     <% } %>
                   </td>
                   <td>
-                    <%= new Date(product.created_at).toISOString().split('T')[0]
+                    <%= new Date(result.created_at).toISOString().split('T')[0]
                     %>
                   </td>
                   <td>

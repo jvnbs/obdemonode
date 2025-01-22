@@ -35,17 +35,21 @@
                 </tr>
               </thead>
               <tbody>
-                <% staffs.forEach(staff => { %>
+                <% if (!results || results.length === 0) { %>
+                  <tr>
+                    <td colspan="9">No data available</td>
+                  </tr>
+                  <% } else { %> <% results.forEach(result => { %>
                 <tr>
-                  <td><%= staff.name %></td>
-                  <td><%= staff.email %></td>
-                  <td><%= staff.phone_number %></td>
+                  <td><%= result.name %></td>
+                  <td><%= result.email %></td>
+                  <td><%= result.phone_number %></td>
                   <td>
-                    <%= new Date(staff.created_at).toISOString().split('T')[0]
+                    <%= new Date(result.created_at).toISOString().split('T')[0]
                     %>
                   </td>
                   <td>
-                    <% if (staff.is_active == 1) { %>
+                    <% if (result.is_active == 1) { %>
                     <span class="badge badge-success">Activated</span>
                     <% } else { %>
                     <span class="badge badge-danger">Deactivated</span>
@@ -60,7 +64,7 @@
                     <span class="badge badge-success">Completed</span>
                   </td>
                 </tr>
-                <% }) %>
+                <% }) %> <% } %>
               </tbody>
             </table>
           </div>

@@ -23,6 +23,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/staffs', staffRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/categories', productRoutes);
 
 
 // Render user page with user data
@@ -61,9 +62,9 @@ app.get('/staffs', async (req, res) => {
     const [rows] = await pool.query('SELECT * FROM admins');
     console.log(rows);
     if (rows.length === 0) {
-      return res.render('staffs', { staffs: [] });
+      return res.render('staffs', { results: [] });
     }
-    res.render('staffs', { staffs: rows });
+    res.render('staffs', { results: rows });
   } catch (error) {
     console.error('Error fetching users:', error.message);
     res.status(500).send('Internal Server Error');
@@ -71,28 +72,50 @@ app.get('/staffs', async (req, res) => {
 });
 
 
-app.get('/products', async (req, res) => {
+
+app.get('/posts', async (req, res) => {
   try {
-    // Fetch data from the API endpoint
-    const response = await fetch('http://localhost:3000/api/products');
-    const data = await response.json(); // Parse the JSON response
-
-    // Log the fetched data
-    console.log('Products:', data);
-
-    // Check if data is empty
-    if (data.length === 0) {
-      return res.render('products', { products: [] });
+    const response = await fetch('http://localhost:3000/api/posts');
+    const data = await response.json(); 
+    console.log(data);
+    if (!Array.isArray(data) || data.length === 0) {
+      return res.render('posts', { results: [] });
     }
-
-    // Render the EJS view with the fetched data
-    res.render('products', { products: data });
+    res.render('posts', { results: data });
   } catch (error) {
     console.error('Error fetching products:', error.message);
     res.status(500).send('Internal Server Error');
   }
 });
 
+app.get('/products', async (req, res) => {
+  try {
+    const response = await fetch('http://localhost:3000/api/products');
+    const data = await response.json(); 
+    if (data.length === 0) {
+      return res.render('products', { results: [] });
+    }
+    res.render('products', { results: data });
+  } catch (error) {
+    console.error('Error fetching products:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+app.get('/categories', async (req, res) => {
+  try {
+    const response = await fetch('http://localhost:3000/api/products');
+    const data = await response.json();
+    if (data.length === 0) {
+      return res.render('categories', { results: [] });
+    }
+    res.render('categories', { results: data });
+  } catch (error) {
+    console.error('Error fetching categories:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 
 // Start Server
