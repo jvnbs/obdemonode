@@ -1,5 +1,4 @@
 const pool = require('../config/db');
-const bcrypt = require('bcrypt');
 
 // Get all posts from the database
 const getAllPosts = async () => {
@@ -21,26 +20,26 @@ const getPostById = async (id) => {
   }
 };
 
-// Create a new post (insert)
-const createPost = async (name, email, password) => {
+const createPost = async (title, sub_title, description) => {
   try {
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
     const [result] = await pool.query(
-      'INSERT INTO blogs (name, email, password) VALUES (?, ?, ?)',
-      [name, email, hashedPassword]
+      'INSERT INTO blogs (title, sub_title, description, image) VALUES (?, ?, ?, ?)',
+      [title, sub_title, description, 'ddd']
     );
-    return result; // Return the result of the insert operation
+    return result; 
+
   } catch (error) {
+    console.error('Error creating new blog post:', error.message);
     throw new Error('Error creating new blog post');
   }
 };
 
+
 // Update an existing post
-const updatePost = async (id, name, email) => {
+const updatePost = async (id, title, sub_title, description) => {
   try {
     // Perform the update operation
-    const [result] = await pool.query('UPDATE blogs SET name = ?, email = ? WHERE id = ?', [name, email, id]);
+    const [result] = await pool.query('UPDATE blogs SET title = ?, sub_title = ?, description = ? WHERE id = ?', [title, sub_title, description, id]);
     return result; // Return the result of the update
   } catch (error) {
     throw new Error('Error updating blog post');
