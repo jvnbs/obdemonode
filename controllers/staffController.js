@@ -29,23 +29,37 @@ const getStaffById = async (req, res) => {
 };
 
 
+
 // Create New User (INSERT)
 const createStaff = async (req, res) => {
   const { name, email, password } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Name, email, and password are required' });
+  let validationErrors = {};
+
+  // Validate name
+  if (!name) {
+    validationErrors.name = 'Name field is required';
+  } else if (name.length < 3 || name.length > 50) {
+    validationErrors.name = 'Name must be between 3 and 50 characters';
   }
 
-  // Validate email format
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ error: 'Invalid email format' });
+  // Validate email
+  if (!email) {
+    validationErrors.email = 'Email field is required';
+  } else if (!/\S+@\S+\.\S+/.test(email)) {
+    validationErrors.email = 'Please provide a valid email address';
   }
 
-  // Optional: validate name length
-  if (name.length < 3 || name.length > 50) {
-    return res.status(400).json({ error: 'Name must be between 3 and 50 characters' });
+  // Validate password
+  if (!password) {
+    validationErrors.password = 'Password field is required';
+  } else if (password.length < 6) {
+    validationErrors.password = 'Password must be at least 6 characters long';
+  }
+
+  // If there are validation errors, return them
+  if (Object.keys(validationErrors).length > 0) {
+    return res.status(400).json({ errors: validationErrors });
   }
 
   try {
