@@ -6,7 +6,9 @@ const userRoutes = require('./routes/userRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const postRoutes = require('./routes/postRoutes');
 const productRoutes = require('./routes/productRoutes');
-const isAuthenticated = require('./authMiddleware');
+const isAuthenticated = require('./middleware/authMiddleware');
+const isValid = require('./middleware/isValid');
+
 
 const pool = require('./models/db');
 const path = require('path');
@@ -23,9 +25,10 @@ app.set('layout', 'layouts/main');
 
 app.use(express.json());
 
-app.use('/api/login', authRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/users', isAuthenticated, userRoutes);
-app.use('/api/staffs', staffRoutes);
+app.use('/api/staffs', isAuthenticated, isValid, staffRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', productRoutes);
@@ -33,6 +36,24 @@ app.use('/api/categories', productRoutes);
 
 // Render user page with user data
 app.get('/', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM users LIMIT 5');
+    console.log(rows);
+    if (rows.length === 0) {
+      // return res.render('users', { users: [] });
+      res.render('login', { layout: false });
+    }
+    // res.render('login', { users: rows });
+    res.render('login', { layout: false });
+  } catch (error) {
+    console.error('Error fetching users:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+// Render user page with user data
+app.get('/dash', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM users LIMIT 5');
     console.log(rows);
@@ -62,7 +83,7 @@ app.get('/users', async (req, res) => {
 });
 
 
-app.get('/staffs', async (req, res) => {
+app.get('/staffs', isAuthenticated, async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM admins');
     console.log(rows);

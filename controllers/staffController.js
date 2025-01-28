@@ -29,24 +29,26 @@ const getStaffById = async (req, res) => {
 };
 
 
-
-// Create New User (INSERT)
 const createStaff = async (req, res) => {
   const { name, email, password } = req.body;
 
   let validationErrors = {};
 
+  // Trim whitespace from inputs
+  const trimmedName = name.trim();
+  const trimmedEmail = email.trim();
+
   // Validate name
-  if (!name) {
+  if (!trimmedName) {
     validationErrors.name = 'Name field is required';
-  } else if (name.length < 3 || name.length > 50) {
+  } else if (trimmedName.length < 3 || trimmedName.length > 50) {
     validationErrors.name = 'Name must be between 3 and 50 characters';
   }
 
   // Validate email
-  if (!email) {
+  if (!trimmedEmail) {
     validationErrors.email = 'Email field is required';
-  } else if (!/\S+@\S+\.\S+/.test(email)) {
+  } else if (!/\S+@\S+\.\S+/.test(trimmedEmail)) {
     validationErrors.email = 'Please provide a valid email address';
   }
 
@@ -63,8 +65,8 @@ const createStaff = async (req, res) => {
   }
 
   try {
-    // Check if the email already exists in the database
-    const [existingUser] = await pool.query('SELECT * FROM admins WHERE email = ?', [email]);
+    // Check if the email already exists in the database (case-insensitive)
+    const [existingUser] = await pool.query('SELECT * FROM admins WHERE LOWER(email) = LOWER(?)', [trimmedEmail]);
 
     if (existingUser.length > 0) {
       return res.status(400).json({ error: 'Email already in use' });
@@ -77,15 +79,16 @@ const createStaff = async (req, res) => {
     // Perform the insert operation
     const [result] = await pool.query(
       'INSERT INTO admins (name, email, password) VALUES (?, ?, ?)',
-      [name, email, hashedPassword]
+      [trimmedName, trimmedEmail, hashedPassword]
     );
 
-    res.status(201).json({ id: result.insertId, name, email });
+    res.status(201).json({ id: result.insertId, name: trimmedName, email: trimmedEmail });
   } catch (error) {
     console.error('Error inserting user:', error);  // Log error
     res.status(500).json({ error: error.message });
   }
 };
+
 
 
 // Update User (UPDATE)

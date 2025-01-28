@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/postController');
-const isAuthenticated = require('../authMiddleware');
+const isAuthenticated = require('../middleware/authMiddleware');
 
 // Route to blogs
 router.get('/', postController.getAllPosts);
