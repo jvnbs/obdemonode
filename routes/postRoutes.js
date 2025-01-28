@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/postController');
+const isAuthenticated = require('../authMiddleware');
 
 // Route to blogs
 router.get('/', postController.getAllPosts);
 router.get('/:id', postController.getPostById);
-router.post('/', postController.createPost);
-router.put('/:id', postController.updatePost);
-router.delete('/:id', postController.deletePost);
+router.post('/', isAuthenticated, postController.createPost);
+router.put('/:id', isAuthenticated, postController.updatePost);
+router.delete('/:id', isAuthenticated, postController.deletePost);
 
 module.exports = router;

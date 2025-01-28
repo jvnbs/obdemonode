@@ -1,9 +1,13 @@
 const express = require('express');
 const app = express();
+
+const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const postRoutes = require('./routes/postRoutes');
 const productRoutes = require('./routes/productRoutes');
+const isAuthenticated = require('./authMiddleware');
+
 const pool = require('./models/db');
 const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
@@ -19,7 +23,8 @@ app.set('layout', 'layouts/main');
 
 app.use(express.json());
 
-app.use('/api/users', userRoutes);
+app.use('/api/login', authRoutes);
+app.use('/api/users', isAuthenticated, userRoutes);
 app.use('/api/staffs', staffRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/products', productRoutes);
