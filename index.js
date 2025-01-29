@@ -37,28 +37,20 @@ app.use('/api/categories', productRoutes);
 // Render user page with user data
 app.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM users LIMIT 5');
-    console.log(rows);
-    if (rows.length === 0) {
-      // return res.render('users', { users: [] });
-      res.render('login', { layout: false });
-    }
-    // res.render('login', { users: rows });
     res.render('login', { layout: false });
   } catch (error) {
-    console.error('Error fetching users:', error.message);
     res.status(500).send('Internal Server Error');
   }
 });
 
 
 // Render user page with user data
-app.get('/dash', async (req, res) => {
+app.get('/dashboard', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM users LIMIT 5');
     console.log(rows);
     if (rows.length === 0) {
-      return res.render('users', { users: [] });
+      return res.render('dashboard', { users: [] });
     }
     res.render('dashboard', { users: rows });
   } catch (error) {
@@ -68,7 +60,7 @@ app.get('/dash', async (req, res) => {
 });
 
 
-app.get('/users', async (req, res) => {
+app.get('/users', isAuthenticated, async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM users');
     console.log(rows);

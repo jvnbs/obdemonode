@@ -1,12 +1,10 @@
 const jwt = require('jsonwebtoken');
 
-// Authentication Middleware for protecting routes
 const isAuthenticated = (req, res, next) => {
-    // Check if token is provided in the Authorization header
     const token = req.headers['authorization'];
 
     if (!token) {
-        return res.status(403).json({ message: 'Access denied. No token provided.' });
+        return res.status(403).json({ message: 'Access denied. No authentication token provided. Please log in first.' });
     }
 
     // Remove 'Bearer ' prefix if it exists
@@ -15,11 +13,10 @@ const isAuthenticated = (req, res, next) => {
     // Verify the token
     jwt.verify(tokenWithoutBearer, process.env.SECRET_KEY, (err, decoded) => {
         if (err) {
-            return res.status(401).json({ message: 'Invalid token.' });
+            return res.status(401).json({ message: 'Session expired or invalid token. Please log in again to continue.' });
         }
 
-        // If the token is valid, store user info in request and proceed
-        req.user = decoded;  // Add decoded user info (e.g., userId) to request object
+        req.user = decoded; 
         next();
     });
 };

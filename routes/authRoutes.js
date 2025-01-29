@@ -33,32 +33,33 @@ router.post('/login', async (req, res) => {
     try {
         // Check if user exists in the database
         const [result] = await connection.query('SELECT * FROM admins WHERE LOWER(email) = LOWER(?)', [trimmedEmail]);
-
+    
         if (result.length === 0) {
-            return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
+            return res.status(401).json({ status: 'error', message: 'Email is incorrect. Please try again.' });
         }
-
+    
         const user = result[0];
-
+    
         // Verify the password using bcrypt
         const passwordMatch = await bcrypt.compare(password, user.password);
-
+    
         if (!passwordMatch) {
-            return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
+            return res.status(401).json({ status: 'error', message: 'Email or password is incorrect. Please try again.' });
         }
-
+    
         // Generate a JWT token
         const token = jwt.sign({ id: user.id, email: user.email }, process.env.SECRET_KEY, { expiresIn: '1h' });
-
+    
         res.json({
             status: 'success',
-            message: 'Login successful',
+            message: 'Welcome back! You have successfully logged in.',
             data: { token, user }
         });
     } catch (error) {
         console.error('Error logging in:', error);
-        res.status(500).json({ status: 'error', message: 'Internal server error' });
+        res.status(500).json({ status: 'error', message: 'Something went wrong on our end. Please try again later.' });
     }
+    
 });
 
 
