@@ -1,26 +1,22 @@
-import React from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import React from 'react';
+import { Link, Outlet } from 'react-router-dom';
+import Header from './Header';
+import Footer from './Footer';
 
-const Layout = () => {
+const Layout = ({ children }) => {
   return (
-      <>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/blogs">Blogs</Link>
-          </li>
-          <li>
-            <Link to="/contact">Contact</Link>
-          </li>
-        </ul>
-      </nav>
-
-      <Outlet />
+    <>
+      <header className="site-header" id="site-header">
+        <Header />
+      </header>
+      <div id="content" className="content">
+          <Outlet/>
+        <div className="footer">
+          <Footer/>
+        </div>
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

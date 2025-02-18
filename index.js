@@ -136,6 +136,13 @@ app.get('/categories', async (req, res) => {
 });
 
 
+app.get('/error', (req, res) => {
+  const message = req.query.message || 'An unexpected error occurred.';
+  res.render('error', { message });
+});
+
+
+
 // Start Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
